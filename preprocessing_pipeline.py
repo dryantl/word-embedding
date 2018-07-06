@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import pandas as pd
+import string
 
 class preprocessing:
 	
@@ -10,8 +11,9 @@ class preprocessing:
 	
     # fungsi untuk menghapus karakter tidak penting
 	def remove_parentheses(self,input_string):
+		input_string=''.join(i for i in input_string if not i.isdigit())
 		result_string=input_string.lower()
-		target_parentheses=['-','/','[',']','!','(',')',',','.','+','-',"'",'"',"|","*","@","#","!","<",">",":",";","?"]
+		target_parentheses=string.punctuation
 		for parentheses in target_parentheses:
 			result_string=result_string.replace(parentheses, ' ')
 		result_string=result_string.strip(' ').split()
@@ -32,14 +34,15 @@ class preprocessing:
 			result_vector+=self.vectorize_word(word)
 		return result_vector
 
-	def preprocess_data(self,features,labels,label_encoder=None):
+	def preprocess_data(self,features,labels,encoder=None):
 		
 		embedded_data=pd.DataFrame()
 
-		if(label_encoder==None):
+		if(encoder==None):
 			label_encoder=LabelEncoder()
 			embedded_data["Labels"]=label_encoder.fit_transform(labels)
 		else:
+			label_encoder=encoder
 			embedded_data["Labels"]=label_encoder.transform(labels)
 			
 		embedded_data["Features"]=[self.remove_parentheses(title) for title in features]
@@ -50,7 +53,7 @@ class preprocessing:
     
 		embedded_data = embedded_data[[*range(self.dimension),"Labels"]]
 		
-		if(label_encoder==None):
+		if(encoder==None):
 			return embedded_data, label_encoder
 		else:
 			return embedded_data
