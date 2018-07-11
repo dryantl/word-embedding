@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import pandas as pd
 import string
+import tqdm
 
 class preprocessing:
 	
@@ -44,11 +45,14 @@ class preprocessing:
 		else:
 			label_encoder=encoder
 			embedded_data["Labels"]=label_encoder.transform(labels)
-			
-		embedded_data["Features"]=[self.remove_parentheses(title) for title in features]
-		embedded_data["Features Vector"]=[self.vectorize_sentence(title) for title in embedded_data["Features"]]
+		
+		print("REMOVING PUNCTUATIONS")
+		embedded_data["Features"]=[self.remove_parentheses(title) for title in tqdm.tqdm(features)]
+		print("CONVERTING SENTENCE TO VECTOR")
+		embedded_data["Features Vector"]=[self.vectorize_sentence(title) for title in tqdm.tqdm(embedded_data["Features"])]
     
-		for i in range(self.dimension):
+		print("SAVE VECTOR TO PANDAS DATAFRAME")
+		for i in tqdm.tqdm(range(self.dimension)):
 			embedded_data[i]=[value[i] for value in embedded_data["Features Vector"]]
     
 		embedded_data = embedded_data[[*range(self.dimension),"Labels"]]
