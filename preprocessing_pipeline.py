@@ -12,7 +12,7 @@ class preprocessing:
 	
     # fungsi untuk menghapus karakter tidak penting
 	def remove_parentheses(self,input_string):
-		input_string=''.join(i for i in input_string if not i.isdigit())
+		##input_string=''.join(i for i in input_string if not i.isdigit())
 		result_string=input_string.lower()
 		target_parentheses=string.punctuation
 		for parentheses in target_parentheses:
